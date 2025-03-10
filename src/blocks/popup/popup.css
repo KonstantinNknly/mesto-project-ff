@@ -21,3 +21,18 @@
   right: 0;
   z-index: 10;
 }
+
+.popup__error {
+  color: red;
+  font-size: 12px;
+  visibility: hidden;
+}
+
+.popup__error_visible {
+  visibility: visible;
+}
+
+.popup__button_disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

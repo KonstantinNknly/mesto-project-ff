@@ -2,6 +2,8 @@ import './pages/index.css';
 import { initialCards } from './scripts/cards.js';
 import { createCard, deleteCard, likeCard } from './components/card.js';
 import { openModal, closeModal, setPopupListeners } from './components/modal.js';
+import { enableValidation, clearValidation } from './components/validation.js';
+
 
 const profileForm = document.forms['edit-profile']; // Форма редактирования профиля
 const cardForm = document.forms['new-place']; // Форма добавления карточки
@@ -19,6 +21,16 @@ const imagePopup = document.querySelector('.popup_type_image'); // Попап с
 const imagePopupImage = document.querySelector('.popup__image'); // Изображение в попапе
 const imagePopupCaption = document.querySelector('.popup__caption'); // Подпись в попапе
 const cardsContainer = document.querySelector('.places__list'); // Контейнер для карточек
+const validationConfig = { 
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+}; // Конфигурация валидации
+
+enableValidation(validationConfig);
 
 setPopupListeners(profilePopup);
 setPopupListeners(addCardPopup);
@@ -43,10 +55,12 @@ initialCards.forEach((cardData) => {
 profileEditButton.addEventListener('click', () => {
     profileNameInput.value = profileName.textContent;
     profileJobInput.value = profileJob.textContent;
+    clearValidation(profileForm, validationConfig);
     openModal(profilePopup);
 });
 
 addCardButton.addEventListener('click', () => {
+    clearValidation(cardForm, validationConfig);
     openModal(addCardPopup);
 });
 
