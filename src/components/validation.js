@@ -2,14 +2,13 @@ const nameInput = document.querySelector('input[name="name"]');
 const descriptionInput = document.querySelector('input[name="description"]');
 const regex = /^[a-zA-Zа-яА-ЯёЁ\s\-]+$/;
 
-
 // Функция показа ошибки
 function showInputError(formElement, inputElement, errorMessage, config) {
   const errorElement = formElement.querySelector(`.${inputElement.name}-error`);
   inputElement.classList.add(config.inputErrorClass);
   errorElement.textContent = errorMessage;
   errorElement.classList.add(config.errorClass);
-}
+};
 
 // Функция скрытия ошибки
 function hideInputError(formElement, inputElement, config) {
@@ -17,7 +16,7 @@ function hideInputError(formElement, inputElement, config) {
   inputElement.classList.remove(config.inputErrorClass);
   errorElement.textContent = '';
   errorElement.classList.remove(config.errorClass);
-}
+};
 
 // Проверка валидности поля
 function isValid(formElement, inputElement, config) {
@@ -50,30 +49,28 @@ function isValid(formElement, inputElement, config) {
   }
 
   if (inputElement.name === 'link') {
-    if (!inputElement.validity.typeMismatch) {
+    if (inputElement.validity.typeMismatch || !inputElement.value.match(/^(https?:\/\/)/)) {
       showInputError(formElement, inputElement, "Введите корректный URL", config);
       return false;
     }
-    if (!inputElement.value.match(/^(https?:\/\/)/)) {
-      showInputError(formElement, inputElement, "URL должен начинаться с http:// или https://", config);
-      return false;
-    }
+
+    hideInputError(formElement, inputElement, config);
+    return true;
   }
 
   hideInputError(formElement, inputElement, config);
   return true;
-}
+};
 
 // Состояние кнопки отправки
 function toggleButtonState(inputList, buttonElement, config) {
   const isFormValid = inputList.every(inputElement => 
-    inputElement.validity.valid && 
-    (inputElement.value.trim() === '' || isValid(inputElement.form, inputElement, config))
+    isValid(inputElement.form, inputElement, config)
   );
   
   buttonElement.disabled = !isFormValid;
   buttonElement.classList.toggle(config.inactiveButtonClass, !isFormValid);
-}
+};
 
 // Установка обработчиков событий
 function setEventListeners(formElement, config) {
@@ -88,7 +85,7 @@ function setEventListeners(formElement, config) {
   });
 
   toggleButtonState(inputList, buttonElement, config);
-}
+};
 
 export function clearValidation(formElement, config) {
   const inputList = Array.from(formElement.querySelectorAll(config.inputSelector));
@@ -100,7 +97,7 @@ export function clearValidation(formElement, config) {
 
   buttonElement.disabled = true;
   buttonElement.classList.add(config.inactiveButtonClass);
-}
+};
 
 export function enableValidation(config) {
   const formList = Array.from(document.querySelectorAll(config.formSelector));
