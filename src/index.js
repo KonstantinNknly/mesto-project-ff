@@ -82,13 +82,6 @@ function handleImageClick(cardData) {
     openModal(imagePopup);
 }
 
-// Загрузка карточек с сервера
-getInitialCards()
-    .then((cards) => {
-        cards.forEach((card) => renderCard(card, 'append'));
-    })
-    .catch((err) => console.error('Ошибка загрузки карточек:', err));
-
 // Редактирование профиля
 profileEditButton.addEventListener('click', () => {
     profileNameInput.value = profileName.textContent;

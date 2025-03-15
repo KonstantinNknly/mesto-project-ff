@@ -1,4 +1,4 @@
-import { addLike, deleteLike, showLikes, deleteCardId } from '../components/api.js';
+import { addLike, deleteLike, deleteCardId } from '../components/api.js';
 
 const cardTemplate = document.querySelector('#card-template');
 
@@ -21,29 +21,29 @@ export function createCard(cardData, userId, removeCard, handleImageClick) {
     cardImage.alt = cardData.name;
     cardTitle.textContent = cardData.name;
     likesCount.textContent = cardData.likes.length;
-    cardData.currentUserId = userId;
-    showLikes(likeButton, likesCount, cardData);
-    // Кнопка удаления
-    if (cardData.owner._id === userId) { 
-        deleteButton.addEventListener("click", () => removeCard(cardElement, cardData._id));
-    } else { 
+
+    const isOwner = cardData.owner._id === userId;
+    if (!isOwner) {
         deleteButton.remove();
+    } else {
+        deleteButton.addEventListener('click', () => removeCard(cardElement, cardData._id));
     }
 
-    // Лайки
+    const isLiked = cardData.likes.some((like) => like._id === userId);
+    likeButton.classList.toggle('card__like-button_is-active', isLiked);
+
     likeButton.addEventListener('click', () => {
-        const isLiked = likeButton.classList.contains('card__like-button_is-active');
-        const likeFunction = isLiked ? deleteLike : addLike;
+        const isLikedNow = likeButton.classList.contains('card__like-button_is-active');
+        const likeFunction = isLikedNow ? deleteLike : addLike;
 
         likeFunction(cardData._id)
-            .then((updateCard) => {
-                likeButton.classList.toggle('card__like-button_is-active', !isLiked);
-                likesCount.textContent = updateCard.likes.length;
+            .then((updatedCard) => {
+                likeButton.classList.toggle('card__like-button_is-active', !isLikedNow);
+                likesCount.textContent = updatedCard.likes.length;
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.error('Ошибка при обработке лайка:', err));
     });
 
-    // Открытие попапа с изображением
     cardImage.addEventListener('click', () => {
         handleImageClick(cardData);
     });
@@ -57,8 +57,4 @@ export function deleteCard(cardElement, cardId) {
             cardElement.remove();
         })
         .catch((err) => console.error('Ошибка при удалении карточки:', err));
-}
-
-export function likeCard(evt) {
-    evt.target.classList.toggle('card__like-button_is-active');
 }
