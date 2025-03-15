@@ -1,2 +1,2 @@
-# Проектная работа Mesto
-https://github.com/KonstantinNknly/mesto-project-ff.git
+# Проектная работа Mesto Валидация форм, интеграция с API и деплой.
+https://konstantinnknly.github.io/mesto-project-ff/
