@@ -17,7 +17,14 @@ function hideInputError(formElement, inputElement, config) {
 // Проверка валидности поля
 function isValid(formElement, inputElement, config) {
   if (!inputElement.validity.valid) {
-      const errorMessage = inputElement.dataset.error || inputElement.validationMessage;
+      let errorMessage = '';
+
+      if (inputElement.validity.patternMismatch) {
+          errorMessage = inputElement.dataset.error || 'Некорректный формат данных';
+      } else {
+          errorMessage = inputElement.validationMessage;
+      }
+
       showInputError(formElement, inputElement, errorMessage, config);
       return false;
   }
