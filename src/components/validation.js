@@ -74,3 +74,7 @@ export function enableValidation(config) {
       setEventListeners(formElement, config);
   });
 }
+
+export function toggleButtonText(button, isSubmitting, defaultText = 'Сохранить') {
+  button.textContent = isSubmitting ? 'Сохранение...' : defaultText;
+}

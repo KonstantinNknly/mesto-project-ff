@@ -1,7 +1,7 @@
 import './pages/index.css';
 import { createCard, deleteCard } from './components/card.js';
 import { openModal, closeModal, setPopupListeners } from './components/modal.js';
-import { enableValidation, clearValidation } from './components/validation.js';
+import { enableValidation, clearValidation, toggleButtonText } from './components/validation.js';
 import {
     getInitialCards,
     getUserMe,
@@ -92,6 +92,11 @@ profileEditButton.addEventListener('click', () => {
 
 profileForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
+    const submitButton = profileForm.querySelector('.popup__button');
+    const originalButtonText = submitButton.textContent;
+
+    toggleButtonText(submitButton, true);
+
     const name = profileNameInput.value;
     const description = profileJobInput.value;
 
@@ -101,7 +106,10 @@ profileForm.addEventListener('submit', (evt) => {
             profileJob.textContent = data.about;
             closeModal(profilePopup);
         })
-        .catch((err) => console.error('Ошибка редактирования профиля:', err));
+        .catch((err) => console.error('Ошибка редактирования профиля:', err))
+        .finally(() => {
+            toggleButtonText(submitButton, false, originalButtonText);
+        });
 });
 
 // Добавление новой карточки
@@ -112,6 +120,11 @@ addCardButton.addEventListener('click', () => {
 
 cardForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
+    const submitButton = cardForm.querySelector('.popup__button');
+    const originalButtonText = submitButton.textContent;
+
+    toggleButtonText(submitButton, true);
+
     const name = cardNameInput.value;
     const link = cardLinkInput.value;
 
@@ -121,7 +134,10 @@ cardForm.addEventListener('submit', (evt) => {
             closeModal(addCardPopup);
             cardForm.reset();
         })
-        .catch((err) => console.error('Ошибка добавления карточки:', err));
+        .catch((err) => console.error('Ошибка добавления карточки:', err))
+        .finally(() => {
+            toggleButtonText(submitButton, false, originalButtonText);
+        });
 });
 
 // Обновление аватара пользователя
@@ -136,19 +152,21 @@ avatarImage.addEventListener('click', () => {
 
 avatarForm?.addEventListener('submit', (evt) => {
     evt.preventDefault();
+    const submitButton = avatarForm.querySelector('.popup__button');
+    const originalButtonText = submitButton.textContent;
+
+    toggleButtonText(submitButton, true);
+
     const avatarUrl = avatarForm.elements['avatar'].value;
 
     newAvatar(avatarUrl)
         .then((data) => {
-            console.log('Аватар обновлён:', data);
-            if (avatarImage.tagName === 'IMG') {
-                avatarImage.src = data.avatar;
-            } else {
-                avatarImage.style.backgroundImage = `url(${data.avatar})`;
-            }
-
+            avatarImage.src = data.avatar;
             closeModal(avatarPopup);
             avatarForm.reset();
         })
-        .catch((err) => console.error('Ошибка обновления аватара:', err));
+        .catch((err) => console.error('Ошибка обновления аватара:', err))
+        .finally(() => {
+            toggleButtonText(submitButton, false, originalButtonText);
+        });
 });
